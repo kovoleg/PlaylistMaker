@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.13"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/back_button_description"
+            app:icon="@drawable/arrow_back"
+            app:iconGravity="textStart"
+            app:iconPadding="1dp"
+            app:iconTint="@color/black"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.87"
+            android:text="@string/options"
+            android:textColor="@color/black"
+            android:gravity="center_vertical|start"
+            android:textSize="22sp"
+            android:paddingStart="12dp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"/>
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/white"
+        android:text="@string/dark_theme"
+        android:gravity="center_vertical|start"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:paddingStart="16dp"
+
+        tools:ignore="UseSwitchCompatOrMaterialXml"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/white"
+        android:text="@string/share_app"
+        android:gravity="center_vertical|start"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+
+        app:icon="@drawable/share"
+        app:iconGravity="end"
+        app:iconTint="@color/gray"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/white"
+        android:text="@string/write_to_support"
+        android:gravity="center_vertical|start"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+
+        app:icon="@drawable/support"
+        app:iconGravity="end"
+        app:iconTint="@color/gray"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/white"
+        android:text="@string/user_agreement"
+        android:gravity="center_vertical|start"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+
+        app:icon="@drawable/forward_arrow"
+        app:iconGravity="end"
+        app:iconTint="@color/gray"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5.5"/>
+</LinearLayout>

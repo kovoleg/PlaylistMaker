@@ -1,19 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="@color/blue"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:weightSum="3.25">
+
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.25"
+        android:layout_gravity="start"
+        android:text="@string/playlist_maker"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        android:layout_marginBottom="24dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/searchButton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:backgroundTint="@color/white"
+        android:layout_weight="1"
+        android:text='@string/search'
+        android:textSize="22sp"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        app:icon="@drawable/lupa"
+        app:iconGravity="textStart"
+        app:iconPadding="1dp"
+        app:cornerRadius="16dp"
+        app:iconTint="@color/black"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/mediatecaButton"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:backgroundTint="@color/white"
+        android:textAllCaps="false"
+        android:text='@string/mediateca'
+        android:textSize="22sp"
+        android:textColor="@color/black"
+        app:icon="@drawable/playlist"
+        app:iconGravity="textStart"
+        app:iconPadding="1dp"
+        app:cornerRadius="16dp"
+        app:iconTint="@color/black"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/optionsButton"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:textAllCaps="false"
+        android:backgroundTint="@color/white"
+        android:text='@string/options'
+        android:textSize="22sp"
+        android:textColor="@color/black"
+        app:icon="@drawable/options"
+        app:iconGravity="textStart"
+        app:iconPadding="1dp"
+        app:cornerRadius="16dp"
+        app:iconTint="@color/black"
+        android:layout_marginBottom="16dp"/>
+</LinearLayout>
