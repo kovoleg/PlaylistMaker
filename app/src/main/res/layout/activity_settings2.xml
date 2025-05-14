@@ -29,7 +29,7 @@
                 android:backgroundTint="@color/white"
                 app:icon="@drawable/arrow_back"
                 app:iconGravity="textStart"
-                app:iconPadding="1dp"
+                app:iconPadding="@dimen/icon_padding"
                 app:iconTint="@color/black"
                 />
 
@@ -40,7 +40,7 @@
                 android:text="@string/options"
                 android:textColor="@color/black"
                 android:gravity="center_vertical|start"
-                android:textSize="22sp"
+                android:textSize="@dimen/primary_text_size"
                 android:paddingStart="12dp" />
         </LinearLayout>
 
@@ -57,8 +57,8 @@
             android:text="@string/dark_theme"
             android:gravity="center_vertical|start"
             android:textColor="@color/black"
-            android:textSize="16sp"
-            android:paddingStart="16dp"
+            android:textSize="@dimen/secondary_text_size"
+            android:paddingStart="@dimen/basic_padding"
 
             tools:ignore="UseSwitchCompatOrMaterialXml"/>
 
@@ -70,7 +70,7 @@
             android:text="@string/share_app"
             android:gravity="center_vertical|start"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="@dimen/secondary_text_size"
             android:textAllCaps="false"
 
             app:icon="@drawable/share"
@@ -85,7 +85,7 @@
             android:text="@string/write_to_support"
             android:gravity="center_vertical|start"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="@dimen/secondary_text_size"
             android:textAllCaps="false"
 
             app:icon="@drawable/support"
@@ -100,7 +100,7 @@
             android:text="@string/user_agreement"
             android:gravity="center_vertical|start"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="@dimen/secondary_text_size"
             android:textAllCaps="false"
 
             app:icon="@drawable/forward_arrow"
