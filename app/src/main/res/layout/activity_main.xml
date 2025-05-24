@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue"
+    android:background="?attr/colorBlueToBlack"
     android:orientation="vertical"
     android:padding="@dimen/basic_padding"
     android:weightSum="3.25">
@@ -22,52 +22,21 @@
 
     <Button
         android:id="@+id/searchButton"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:backgroundTint="@color/white"
-        android:layout_weight="1"
+        style="@style/MainScreenButton"
         android:text='@string/search'
-        android:textSize="@dimen/primary_text_size"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        app:icon="@drawable/lupa"
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/icon_padding"
-        app:cornerRadius="@dimen/corner_radius"
-        app:iconTint="@color/black"
-        android:layout_marginBottom="@dimen/bottom_margin_main"/>
+        app:icon="@drawable/lupa" />
 
     <Button
         android:id="@+id/mediatecaButton"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:backgroundTint="@color/white"
-        android:textAllCaps="false"
         android:text='@string/mediateca'
-        android:textSize="@dimen/primary_text_size"
-        android:textColor="@color/black"
         app:icon="@drawable/playlist"
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/icon_padding"
-        app:cornerRadius="@dimen/corner_radius"
-        app:iconTint="@color/black"
-        android:layout_marginBottom="@dimen/bottom_margin_main"/>
+        style="@style/MainScreenButton"
+        />
 
     <Button
         android:id="@+id/optionsButton"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:textAllCaps="false"
-        android:backgroundTint="@color/white"
         android:text='@string/options'
-        android:textSize="@dimen/primary_text_size"
-        android:textColor="@color/black"
         app:icon="@drawable/options"
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/icon_padding"
-        app:cornerRadius="@dimen/corner_radius"
-        app:iconTint="@color/black"
-        android:layout_marginBottom="@dimen/bottom_margin_main"/>
+        style="@style/MainScreenButton"
+        />
 </LinearLayout>
