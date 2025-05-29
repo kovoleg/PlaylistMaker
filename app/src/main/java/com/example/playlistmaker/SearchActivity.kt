@@ -1,17 +1,19 @@
 package com.example.playlistmaker
 
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
-import android.widget.Button
+import android.view.inputmethod.InputMethodManager
+
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import com.google.android.material.appbar.MaterialToolbar
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : BasicActivity() {
     private var searchBarText: String = BASE_SEARCH_STRING
     private lateinit var inputEditText: EditText
 
@@ -20,47 +22,41 @@ class SearchActivity : AppCompatActivity() {
         const val BASE_SEARCH_STRING = ""
     }
 
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
 
-        val backFromSettingsButton: Button = findViewById(R.id.backFromSettingsButton) // add <>
+        val rootLinearLayout = findViewById<LinearLayout>(R.id.rootView)
+        setupEdgeToEdge(rootLinearLayout)
+
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
         inputEditText = findViewById<EditText>(R.id.search_bar)
 
 
         clearButton.setOnClickListener {
             inputEditText.setText("")
+
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
         }
 
-        backFromSettingsButton.setOnClickListener {
-            val  backFromSettingsActivity = Intent(this@SearchActivity, MainActivity::class.java)
-            startActivity(backFromSettingsActivity)
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        toolbar.setNavigationOnClickListener {
+            finish()
         }
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // empty
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
-                clearButton.visibility = clearButtonVisibility(s)
+                clearButton.isVisible = !s.isNullOrEmpty()
             }
 
             override fun afterTextChanged(s: Editable?) {
 
-                // empty
             }
         }
         inputEditText.addTextChangedListener(simpleTextWatcher)
@@ -69,7 +65,6 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle){
         super.onSaveInstanceState(outState)
-        val inputEditText = findViewById<EditText>(R.id.search_bar)
         outState.putString(SEARCH_BAR_SAVED_TEXT, inputEditText.text.toString())
     }
 
