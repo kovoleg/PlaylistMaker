@@ -19,20 +19,20 @@ class MainActivity : AppCompatActivity() {
 
         searchButton.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                // Toast.makeText(this@MainActivity, "Нажата кнопка 'Поиск' (анонимный класс)", Toast.LENGTH_SHORT).show()
+                // Toast.makeText(this@MainActivity, "Нажата кнопка 'Поиск'", Toast.LENGTH_SHORT).show()
                 val searchActivity = Intent(this@MainActivity, SearchActivity::class.java)
                 startActivity(searchActivity)
             }
         })
 
         mediatecaButton.setOnClickListener {
-            // Toast.makeText(this@MainActivity, "Нажата кнопка 'Медиатека' (лямбда)", Toast.LENGTH_SHORT).show()
+            // Toast.makeText(this@MainActivity, "Нажата кнопка 'Медиатека'", Toast.LENGTH_SHORT).show()
             val mediaIntent = Intent(this, MediatecaActivity::class.java)
             startActivity(mediaIntent)
         }
 
         optionsButton.setOnClickListener {
-            // Toast.makeText(this@MainActivity, "Нажата кнопка 'Настройки' (лямбда)", Toast.LENGTH_SHORT).show()
+            // Toast.makeText(this@MainActivity, "Нажата кнопка 'Настройки'", Toast.LENGTH_SHORT).show()
             val settingsIntent = Intent(this, SettingsActivity::class.java)
             startActivity(settingsIntent)
         }

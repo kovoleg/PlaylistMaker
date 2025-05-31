@@ -1,6 +1,5 @@
 <resources>
     <string name="search" translatable="false">Поиск</string>
-
     <string name="title_hello">Привет, Практикум</string>
     <string name="mediateca" translatable="false">Медиатека</string>
     <string name="options" translatable="false">Настройки</string>
@@ -11,4 +10,10 @@
     <string name="user_agreement" translatable="false">Пользовательское соглашение</string>
     <string name="app_name" translatable="false">Playlist Maker</string>
     <string name="back_button_description" translatable="false">Назад</string>
+    <string name="practicum_android_link" translatable="false">https://practicum.yandex.ru/profile/android-developer/</string>
+    <string name="email_theme_support" translatable="false">\"Сообщение разработчикам и разработчицам приложения Playlist Maker\"</string>
+    <string name="thx_for_the_app" translatable="false">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="prac_offer_agree" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="support_email" translatable="false">oleglvl80@mail.ru</string>
+    <string name="clear_button" translatable="false">Кнопка очистить</string>
 </resources>
