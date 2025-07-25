@@ -6,4 +6,26 @@
     <dimen name="bottom_margin_main">16dp</dimen>
     <dimen name="icon_padding">1dp</dimen>
     <dimen name="basic_padding">16dp</dimen>
+    <dimen name="song_time_text_size">12sp</dimen>
+    <dimen name="song_name_text_size">16sp</dimen>
+    <dimen name="song_item_height">60dp</dimen>
+    <dimen name="song_picture_size">45dp</dimen>
+    <dimen name="song_picture_margin_start">12dp</dimen>
+    <dimen name="song_name_margin_start">8dp</dimen>
+    <dimen name="song_name_margin_end">8dp</dimen>
+    <dimen name="song_name_margin_bottom">1dp</dimen>
+    <dimen name="song_artist_text_size">11sp</dimen>
+    <dimen name="song_divide_dot_size">12dp</dimen>
+    <dimen name="song_divide_dot_margin_start">4dp</dimen>
+    <dimen name="song_divide_dot_margin_end">4dp</dimen>
+    <dimen name="song_time_margin_end">8dp</dimen>
+    <dimen name="song_forward_arrow_size">24dp</dimen>
+    <dimen name="song_forward_arrow_margin_end">20dp</dimen>
+    <dimen name="padding_small">4dp</dimen>
+    <dimen name="search_bar_container_height">52dp</dimen>
+    <dimen name="search_bar_height">36dp</dimen>
+    <dimen name="margin_large">16dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="drawable_padding">8dp</dimen>
+    <dimen name="padding_medium">12dp</dimen>
 </resources>
