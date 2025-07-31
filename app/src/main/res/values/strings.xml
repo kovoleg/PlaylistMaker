@@ -16,7 +16,7 @@
     <string name="prac_offer_agree" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
     <string name="support_email" translatable="false">oleglvl80@mail.ru</string>
     <string name="clear_button" translatable="false">Кнопка очистить</string>
-    <string name="empty_search_result">Ничего не нашлось</string>
-    <string name="problems_with_connection_search">Проблемы со связью \n\n Загрузка не удалась. Проверьте подключение к интернету </string>
-    <string name="refresh">Обновить</string>
+    <string name="empty_search_result"  translatable="false">Ничего не нашлось</string>
+    <string name="problems_with_connection_search"  translatable="false">Проблемы со связью \n\n Загрузка не удалась. Проверьте подключение к интернету </string>
+    <string name="refresh"  translatable="false">Обновить</string>
 </resources>

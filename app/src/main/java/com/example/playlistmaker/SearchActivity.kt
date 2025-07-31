@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -50,6 +49,11 @@ class SearchActivity : BasicActivity() {
     companion object {
         const val SEARCH_BAR_SAVED_TEXT = "PRODUCT_AMOUNT"
         const val BASE_SEARCH_STRING = ""
+        
+        // Constants for message types
+        const val MESSAGE_CONTENT = "content"
+        const val MESSAGE_NO_RESULTS = "no_results"
+        const val MESSAGE_ERROR = "error"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +79,7 @@ class SearchActivity : BasicActivity() {
             inputEditText.setText("")
             trackList.clear()
             trackAdapter.notifyDataSetChanged()
-            showMessage("content")
+            showMessage(MESSAGE_CONTENT)
 
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
@@ -87,62 +91,14 @@ class SearchActivity : BasicActivity() {
 
         refreshButton.setOnClickListener {
             if (inputEditText.text.isNotEmpty()) {
-                iTunesService.search(inputEditText.text.toString()).enqueue(object : Callback<SearchResponse> {
-                    override fun onResponse(call: Call<SearchResponse>, response: Response<SearchResponse>) {
-                        if (response.isSuccessful) {
-                            val searchResponse = response.body()
-                            if (searchResponse != null) {
-                                trackList.clear()
-                                if (searchResponse.results.isNotEmpty()) {
-                                    trackList.addAll(searchResponse.results)
-                                    trackAdapter.notifyDataSetChanged()
-                                    showMessage("content")
-                                } else {
-                                    showMessage("no_results")
-                                }
-                            } else {
-                                showMessage("error")
-                            }
-                        } else {
-                            showMessage("error")
-                        }
-                    }
-
-                    override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                        showMessage("error")
-                    }
-                })
+                performSearch(inputEditText.text.toString())
             }
         }
 
         inputEditText.setOnEditorActionListener { _, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (inputEditText.text.isNotEmpty()) {
-                    iTunesService.search(inputEditText.text.toString()).enqueue(object : Callback<SearchResponse> {
-                        override fun onResponse(call: Call<SearchResponse>, response: Response<SearchResponse>) {
-                            if (response.isSuccessful) {
-                                val searchResponse = response.body()
-                                if (searchResponse != null) {
-                                    trackList.clear()
-                                    if (searchResponse.results.isNotEmpty()) {
-                                        trackList.addAll(searchResponse.results)
-                                        trackAdapter.notifyDataSetChanged()
-                                        showMessage("content")
-                                    } else {
-                                        showMessage("no_results")
-                                    }
-                                } else {
-                                    showMessage("error")
-                                }
-                            } else {
-                                showMessage("error")
-                            }
-                        }
-
-                        override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                            showMessage("error")
-                        }
-                    })
+                    performSearch(inputEditText.text.toString())
                 }
                 true
             } else {
@@ -159,7 +115,7 @@ class SearchActivity : BasicActivity() {
                 if (s.isNullOrEmpty()) {
                     trackList.clear()
                     trackAdapter.notifyDataSetChanged()
-                    showMessage("content")
+                    showMessage(MESSAGE_CONTENT)
                 }
             }
 
@@ -170,22 +126,50 @@ class SearchActivity : BasicActivity() {
 
     private fun showMessage(type: String) {
         when (type) {
-            "content" -> {
+            MESSAGE_CONTENT -> {
                 rvSongs.visibility = View.VISIBLE
                 placeholderNoResults.visibility = View.GONE
                 placeholderError.visibility = View.GONE
             }
-            "no_results" -> {
+            MESSAGE_NO_RESULTS -> {
                 rvSongs.visibility = View.GONE
                 placeholderNoResults.visibility = View.VISIBLE
                 placeholderError.visibility = View.GONE
             }
-            "error" -> {
+            MESSAGE_ERROR -> {
                 rvSongs.visibility = View.GONE
                 placeholderNoResults.visibility = View.GONE
                 placeholderError.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun performSearch(query: String) {
+        iTunesService.search(query).enqueue(object : Callback<SearchResponse> {
+            override fun onResponse(call: Call<SearchResponse>, response: Response<SearchResponse>) {
+                if (response.isSuccessful) {
+                    val searchResponse = response.body()
+                    if (searchResponse != null) {
+                        trackList.clear()
+                        if (searchResponse.results.isNotEmpty()) {
+                            trackList.addAll(searchResponse.results)
+                            trackAdapter.notifyDataSetChanged()
+                            showMessage(MESSAGE_CONTENT)
+                        } else {
+                            showMessage(MESSAGE_NO_RESULTS)
+                        }
+                    } else {
+                        showMessage(MESSAGE_ERROR)
+                    }
+                } else {
+                    showMessage(MESSAGE_ERROR)
+                }
+            }
+
+            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                showMessage(MESSAGE_ERROR)
+            }
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
