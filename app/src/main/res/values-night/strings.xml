@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_hello">Hello, Practicum</string>
-    <string name="errsearch">ErrSearch</string>
     <string name="errcon">errcon</string>
 </resources>

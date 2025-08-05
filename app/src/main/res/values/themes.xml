@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:windowLightNavigationBar">true</item>
         <item name="colorBlueToBlack">@color/blue</item>
         <item name="colorWhiteToBlack">@color/white</item>
         <item name="colorBlackToWhite">@color/black</item>
@@ -10,8 +14,16 @@
         <item name="colorLightGrayToLightBlue">@color/light_gray</item>
         <item name="colorLightGrayToWhite">@color/light_gray</item>
         <item name="colorGrayToBlack">@color/gray</item>
-
+        <item name="picLightToDarkErrCon">@drawable/error_connection_light</item>
+        <item name="picLightToDarkErrSearch">@drawable/error_search_light</item>
     </style>
 
     <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
+
+    <style name="Theme.PlaylistMaker.Main" parent="Base.Theme.PlaylistMaker">
+        <item name="android:statusBarColor">@color/blue</item>
+        <item name="android:navigationBarColor">@color/blue</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
 </resources>

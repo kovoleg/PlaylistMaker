@@ -4,68 +4,56 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : BasicActivity() {
-    private var searchBarText: String = BASE_SEARCH_STRING
+
+    private val iTunesBaseUrl = "https://itunes.apple.com/"
+
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(iTunesBaseUrl)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private val iTunesService = retrofit.create(iTunesApi::class.java)
+
     private lateinit var inputEditText: EditText
+    private lateinit var clearButton: ImageView
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var refreshButton: Button
+    private lateinit var rvSongs: RecyclerView
+    private lateinit var placeholderNoResults: LinearLayout
+    private lateinit var placeholderError: LinearLayout
 
     private val trackList = ArrayList<Track>()
-    init {
-        trackList.add(
-            Track(
-                trackName = "Smells Like Teen Spirit",
-                artistName = "Nirvana",
-                trackTime = "5:01",
-                artworkUrl100 = "https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg"
-            )
-        )
-        trackList.add(
-            Track(
-                trackName = "Billie Jean",
-                artistName = "Michael Jackson",
-                trackTime = "4:35",
-                artworkUrl100 = "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/3d/9d/38/3d9d3811-71f0-3a0e-1ada-3004e56ff852/827969428726.jpg/100x100bb.jpg"
-            )
-        )
-        trackList.add(
-            Track(
-                trackName = "Stayin' Alive",
-                artistName = "Bee Gees",
-                trackTime = "4:10",
-                artworkUrl100 = "https://is4-ssl.mzstatic.com/image/thumb/Music115/v4/1f/80/1f/1f801fc1-8c0f-ea3e-d3e5-387c6619619e/16UMGIM86640.rgb.jpg/100x100bb.jpg"
-            )
-        )
-        trackList.add(
-            Track(
-                trackName = "Whole Lotta Love",
-                artistName = "Led Zeppelin",
-                trackTime = "5:33",
-                artworkUrl100 = "https://is2-ssl.mzstatic.com/image/thumb/Music62/v4/7e/17/e3/7e17e33f-2efa-2a36-e916-7f808576cf6b/mzm.fyigqcbs.jpg/100x100bb.jpg"
-            )
-        )
-        trackList.add(
-            Track(
-                trackName = "Sweet Child O'Mine",
-                artistName = "Guns N' Roses",
-                trackTime = "5:03",
-                artworkUrl100 = "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/100x100bb.jpg"
-            )
-        )
-    }
+
+    private val trackAdapter = TrackAdapter(trackList)
+
+    private var searchBarText: String = BASE_SEARCH_STRING
 
     companion object {
         const val SEARCH_BAR_SAVED_TEXT = "PRODUCT_AMOUNT"
         const val BASE_SEARCH_STRING = ""
+        
+        // Constants for message types
+        const val MESSAGE_CONTENT = "content"
+        const val MESSAGE_NO_RESULTS = "no_results"
+        const val MESSAGE_ERROR = "error"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,54 +64,123 @@ class SearchActivity : BasicActivity() {
         val rootLinearLayout = findViewById<LinearLayout>(R.id.rootView)
         setupEdgeToEdge(rootLinearLayout)
 
-        val clearButton = findViewById<ImageView>(R.id.clearIcon)
-        inputEditText = findViewById<EditText>(R.id.search_bar)
+        inputEditText = findViewById(R.id.search_bar)
+        clearButton = findViewById(R.id.clearIcon)
+        toolbar = findViewById(R.id.toolbar)
+        refreshButton = findViewById(R.id.refreshButton)
+        rvSongs = findViewById(R.id.rvSongs)
+        placeholderNoResults = findViewById(R.id.placeholderNoResults)
+        placeholderError = findViewById(R.id.placeholderError)
 
+        rvSongs.layoutManager = LinearLayoutManager(this)
+        rvSongs.adapter = trackAdapter
 
         clearButton.setOnClickListener {
             inputEditText.setText("")
+            trackList.clear()
+            trackAdapter.notifyDataSetChanged()
+            showMessage(MESSAGE_CONTENT)
 
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
         }
 
-        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         toolbar.setNavigationOnClickListener {
             finish()
         }
 
-        val simpleTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-                clearButton.isVisible = !s.isNullOrEmpty()
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-
+        refreshButton.setOnClickListener {
+            if (inputEditText.text.isNotEmpty()) {
+                performSearch(inputEditText.text.toString())
             }
         }
-        inputEditText.addTextChangedListener(simpleTextWatcher)
 
-        val rvSongs= findViewById<RecyclerView>(R.id.rvSongs)
-        rvSongs.layoutManager = LinearLayoutManager(this)
-        rvSongs.adapter = TrackAdapter(trackList)
+        inputEditText.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (inputEditText.text.isNotEmpty()) {
+                    performSearch(inputEditText.text.toString())
+                }
+                true
+            } else {
+                false
+            }
+        }
+
+        val simpleTextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                clearButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
+
+                if (s.isNullOrEmpty()) {
+                    trackList.clear()
+                    trackAdapter.notifyDataSetChanged()
+                    showMessage(MESSAGE_CONTENT)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        }
+        inputEditText.addTextChangedListener(simpleTextWatcher)
     }
 
-    override fun onSaveInstanceState(outState: Bundle){
+    private fun showMessage(type: String) {
+        when (type) {
+            MESSAGE_CONTENT -> {
+                rvSongs.visibility = View.VISIBLE
+                placeholderNoResults.visibility = View.GONE
+                placeholderError.visibility = View.GONE
+            }
+            MESSAGE_NO_RESULTS -> {
+                rvSongs.visibility = View.GONE
+                placeholderNoResults.visibility = View.VISIBLE
+                placeholderError.visibility = View.GONE
+            }
+            MESSAGE_ERROR -> {
+                rvSongs.visibility = View.GONE
+                placeholderNoResults.visibility = View.GONE
+                placeholderError.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun performSearch(query: String) {
+        iTunesService.search(query).enqueue(object : Callback<SearchResponse> {
+            override fun onResponse(call: Call<SearchResponse>, response: Response<SearchResponse>) {
+                if (response.isSuccessful) {
+                    val searchResponse = response.body()
+                    if (searchResponse != null) {
+                        trackList.clear()
+                        if (searchResponse.results.isNotEmpty()) {
+                            trackList.addAll(searchResponse.results)
+                            trackAdapter.notifyDataSetChanged()
+                            showMessage(MESSAGE_CONTENT)
+                        } else {
+                            showMessage(MESSAGE_NO_RESULTS)
+                        }
+                    } else {
+                        showMessage(MESSAGE_ERROR)
+                    }
+                } else {
+                    showMessage(MESSAGE_ERROR)
+                }
+            }
+
+            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                showMessage(MESSAGE_ERROR)
+            }
+        })
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_BAR_SAVED_TEXT, inputEditText.text.toString())
     }
-
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
 
         searchBarText = savedInstanceState.getString(SEARCH_BAR_SAVED_TEXT, BASE_SEARCH_STRING)
-
-        val inputEditText = findViewById<EditText>(R.id.search_bar)
         inputEditText.setText(searchBarText)
     }
 }
