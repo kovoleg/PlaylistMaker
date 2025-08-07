@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.core.net.toUri
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : BasicActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +27,13 @@ class SettingsActivity : BasicActivity() {
         val writeToSupportButton: Button = findViewById(R.id.writeToSupportButton)
         val usersAgreementButton: Button = findViewById(R.id.usersAgreementButton)
 
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+
+        themeSwitcher.isChecked = (applicationContext as App).darkTheme
+        
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+        }
 
         shareAppButton.setOnClickListener{
             val message = getString(R.string.practicum_android_link)

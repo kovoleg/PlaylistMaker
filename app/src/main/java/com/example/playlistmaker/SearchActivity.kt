@@ -39,18 +39,23 @@ class SearchActivity : BasicActivity() {
     private lateinit var rvSongs: RecyclerView
     private lateinit var placeholderNoResults: LinearLayout
     private lateinit var placeholderError: LinearLayout
-
+    private lateinit var searchHistoryContainer: LinearLayout
+    private lateinit var rvSearchHistory: RecyclerView
+    private lateinit var clearHistoryButton: Button
+    private lateinit var searchHistory: SearchHistory
+    private lateinit var trackAdapter: TrackAdapter
+    private lateinit var historyAdapter: TrackAdapter
+    
     private val trackList = ArrayList<Track>()
-
-    private val trackAdapter = TrackAdapter(trackList)
+    private val historyTrackList = ArrayList<Track>()
 
     private var searchBarText: String = BASE_SEARCH_STRING
 
     companion object {
         const val SEARCH_BAR_SAVED_TEXT = "PRODUCT_AMOUNT"
         const val BASE_SEARCH_STRING = ""
-        
-        // Constants for message types
+
+        const val SEARCH_HISTORY_REFERENCES = "search_history_references"
         const val MESSAGE_CONTENT = "content"
         const val MESSAGE_NO_RESULTS = "no_results"
         const val MESSAGE_ERROR = "error"
@@ -60,6 +65,8 @@ class SearchActivity : BasicActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
+
+        val sharedPrefs = getSharedPreferences(SEARCH_HISTORY_REFERENCES, MODE_PRIVATE)
 
         val rootLinearLayout = findViewById<LinearLayout>(R.id.rootView)
         setupEdgeToEdge(rootLinearLayout)
@@ -71,18 +78,44 @@ class SearchActivity : BasicActivity() {
         rvSongs = findViewById(R.id.rvSongs)
         placeholderNoResults = findViewById(R.id.placeholderNoResults)
         placeholderError = findViewById(R.id.placeholderError)
+        searchHistoryContainer = findViewById(R.id.searchHistoryContainer)
+        rvSearchHistory = findViewById(R.id.rvSearchHistory)
+        clearHistoryButton = findViewById(R.id.clearHistoryButton)
+
+        searchHistory = SearchHistory(sharedPrefs)
+        
+        // нужно обновлять адаптеры после тычка на песню из найднных, а также на песню из истории поиска
+        // чтобы избежать дублирования кода, мы будем передавать updateSearchHistory() внутрь
+        trackAdapter = TrackAdapter(trackList) { track ->
+            searchHistory.saveTrack(track)
+            updateSearchHistory()
+        }
+        historyAdapter = TrackAdapter(historyTrackList) { track ->
+            searchHistory.saveTrack(track)
+            updateSearchHistory()
+        }
 
         rvSongs.layoutManager = LinearLayoutManager(this)
         rvSongs.adapter = trackAdapter
+        
+        rvSearchHistory.layoutManager = LinearLayoutManager(this)
+        rvSearchHistory.adapter = historyAdapter
 
         clearButton.setOnClickListener {
             inputEditText.setText("")
             trackList.clear()
             trackAdapter.notifyDataSetChanged()
-            showMessage(MESSAGE_CONTENT)
+            updateSearchHistory()
 
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+        }
+        
+        clearHistoryButton.setOnClickListener {
+            searchHistory.clearHistory() // удаляем содержимое
+            historyTrackList.clear() // не забываем перерисовать!!
+            historyAdapter.notifyDataSetChanged()
+            updateSearchHistory()
         }
 
         toolbar.setNavigationOnClickListener {
@@ -115,16 +148,33 @@ class SearchActivity : BasicActivity() {
                 if (s.isNullOrEmpty()) {
                     trackList.clear()
                     trackAdapter.notifyDataSetChanged()
-                    showMessage(MESSAGE_CONTENT)
                 }
+                
+                // показываем историю только если поле в фокусе и пустое
+                searchHistoryContainer.visibility = if (inputEditText.hasFocus() && s.isNullOrEmpty()) View.VISIBLE else View.GONE
             }
 
             override fun afterTextChanged(s: Editable?) {}
         }
         inputEditText.addTextChangedListener(simpleTextWatcher)
+
+        inputEditText.setOnFocusChangeListener { _, hasFocus ->
+            searchHistoryContainer.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.VISIBLE else View.GONE
+        }
+        
+        // Инициализация истории при запуске
+        updateSearchHistory()
+    }
+    // Приемлемо ли?
+    private fun updateSearchHistory() { // Нужно обновить: Получили -> Очистили список на который смотрел адаптер -> Добавили все элементы из истории -> Попросили перерисовать
+        val history = searchHistory.getSearchHistory()
+        historyTrackList.clear()
+        historyTrackList.addAll(history)
+        historyAdapter.notifyDataSetChanged()
     }
 
     private fun showMessage(type: String) {
+        searchHistoryContainer.visibility = View.GONE
         when (type) {
             MESSAGE_CONTENT -> {
                 rvSongs.visibility = View.VISIBLE

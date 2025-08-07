@@ -18,7 +18,8 @@
         app:title="@string/options" />
 
 
-    <androidx.appcompat.widget.SwitchCompat
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/themeSwitcher"
         android:text="@string/dark_theme"
         style="@style/OptionsScreenButton"
         android:paddingStart="@dimen/basic_padding"
