@@ -11,7 +11,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+
 import androidx.activity.enableEdgeToEdge
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
@@ -39,7 +41,7 @@ class SearchActivity : BasicActivity() {
     private lateinit var rvSongs: RecyclerView
     private lateinit var placeholderNoResults: LinearLayout
     private lateinit var placeholderError: LinearLayout
-    private lateinit var searchHistoryContainer: LinearLayout
+    private lateinit var searchHistoryContainer: ConstraintLayout
     private lateinit var rvSearchHistory: RecyclerView
     private lateinit var clearHistoryButton: Button
     private lateinit var searchHistory: SearchHistory
@@ -149,9 +151,9 @@ class SearchActivity : BasicActivity() {
                     trackList.clear()
                     trackAdapter.notifyDataSetChanged()
                 }
-                
+
                 // показываем историю только если поле в фокусе и пустое
-                searchHistoryContainer.visibility = if (inputEditText.hasFocus() && s.isNullOrEmpty()) View.VISIBLE else View.GONE
+                showOrHideSearchHistory()
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -159,7 +161,7 @@ class SearchActivity : BasicActivity() {
         inputEditText.addTextChangedListener(simpleTextWatcher)
 
         inputEditText.setOnFocusChangeListener { _, hasFocus ->
-            searchHistoryContainer.visibility = if (hasFocus && inputEditText.text.isEmpty()) View.VISIBLE else View.GONE
+            showOrHideSearchHistory()
         }
         
         // Инициализация истории при запуске
@@ -171,6 +173,12 @@ class SearchActivity : BasicActivity() {
         historyTrackList.clear()
         historyTrackList.addAll(history)
         historyAdapter.notifyDataSetChanged()
+        showOrHideSearchHistory()
+    }
+
+    private fun showOrHideSearchHistory() {
+        val shouldShow = inputEditText.hasFocus() && inputEditText.text.isEmpty() && historyTrackList.isNotEmpty()
+        searchHistoryContainer.visibility = if (shouldShow) View.VISIBLE else View.GONE
     }
 
     private fun showMessage(type: String) {

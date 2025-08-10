@@ -12,11 +12,6 @@ class SearchHistory(
     private val sharedPreferences: SharedPreferences
 ) {
     private val gson = Gson()
-    companion object {
-        private const val SEARCH_HISTORY_KEY = "search_history"
-        private const val MAX_HISTORY_SIZE = 10
-    }
-
     fun saveTrack(track: Track) {
         // начинаем сохранение. сначала получим наш список из шеред преференсес
         val tracks = getSearchHistory().toMutableList()
@@ -51,5 +46,10 @@ class SearchHistory(
         sharedPreferences.edit()
             .remove(SEARCH_HISTORY_KEY)
             .apply()
+    }
+
+    companion object {
+        private const val SEARCH_HISTORY_KEY = "search_history"
+        private const val MAX_HISTORY_SIZE = 10
     }
 }

@@ -9,6 +9,7 @@ const val THEME_KEY = "theme_key"
 class App : Application() {
 
     var darkTheme = false
+        private set
     override fun onCreate() {
         super.onCreate()
         val sharedPrefs = getSharedPreferences(THEME_PREFS, MODE_PRIVATE)

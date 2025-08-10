@@ -28,11 +28,12 @@ class SettingsActivity : BasicActivity() {
         val usersAgreementButton: Button = findViewById(R.id.usersAgreementButton)
 
         val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+        val appContext = applicationContext as App
 
-        themeSwitcher.isChecked = (applicationContext as App).darkTheme
+        themeSwitcher.isChecked = appContext.darkTheme
         
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            (applicationContext as App).switchTheme(checked)
+            appContext.switchTheme(checked)
         }
 
         shareAppButton.setOnClickListener{
